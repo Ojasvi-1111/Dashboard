@@ -13,6 +13,7 @@ html,body{margin:0;padding:0}
 body{background:var(--bg);color:var(--txt);font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding-bottom:calc(24px + env(safe-area-inset-bottom,0px))}
 main{max-width:760px;margin:0 auto;padding:calc(12px + env(safe-area-inset-top,0px)) 12px 12px}
 body:not(.onhome) main{padding-top:calc(64px + env(safe-area-inset-top,0px))}
+body.onhome main{padding-right:92px}
 section[hidden]{display:none}
 h2{font-size:1.05rem;margin:18px 4px 8px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px;margin-bottom:12px}
@@ -32,6 +33,7 @@ input[type=text]{width:160px}
 input[type=date]{width:150px}
 select{width:auto;min-width:90px}
 textarea{width:100%;min-height:84px;resize:vertical;line-height:1.4}
+textarea.day{min-height:64px;margin-top:8px}
 input:focus,select:focus,textarea:focus{outline:2px solid var(--acc);outline-offset:1px}
 label.fld{display:inline-flex;flex-direction:column;gap:4px;font-size:.8rem;color:var(--mut);margin:4px 8px 4px 0}
 label.fld.full{display:flex;width:100%;margin-right:0}
@@ -40,6 +42,7 @@ label.fld.full input{width:100%}
 .spread{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .grow{border-top:1px solid var(--line);padding:12px 2px}
 .grow:first-child{border-top:none}
+.ro .grow button,.ro .grow input,.ro .grow textarea{pointer-events:none;opacity:.55}
 .dot{width:10px;height:10px;border-radius:50%;flex:none}
 .glabel{font-weight:600;flex:1}
 .gval{font-variant-numeric:tabular-nums;color:var(--mut);font-size:.9rem}
@@ -50,7 +53,7 @@ label.fld.full input{width:100%}
 .slot.f{border-style:solid;background:var(--acc);border-color:var(--acc);color:#fff}
 .chip{display:inline-flex;align-items:center;min-height:36px;padding:2px 10px;border-radius:999px;border:1px solid var(--line);font-size:.8rem;font-weight:600}
 .chooser{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
-.seg{display:inline-flex;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:3px;gap:2px}
+.seg{display:inline-flex;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:3px;gap:2px;flex-wrap:wrap}
 .seg button{min-height:36px;padding:4px 12px;border-radius:9px;font-weight:600;font-size:.85rem;color:var(--mut)}
 .seg button.on{background:var(--acc);color:#fff}
 .donutwrap{display:flex;flex-direction:column;align-items:center;padding:6px 0 2px}
@@ -63,19 +66,21 @@ label.fld.full input{width:100%}
 .hm .wk{display:flex;flex-direction:column;gap:3px}
 .hm .c{width:14px;height:14px;border-radius:3px;background:var(--line);flex:none}
 .hm .c.today{outline:2px solid var(--txt);outline-offset:-1px}
-/* corner nav (Home) + Home pill (other screens) */
-.cnav{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));right:12px;display:flex;flex-direction:column;gap:5px;z-index:50}
-.cnav button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;width:64px;min-height:46px;border-radius:12px;background:var(--card);border:1px solid var(--line);font-size:.62rem;font-weight:700;color:var(--mut)}
-.cnav button:active{transform:scale(.96)}
-.cnav .ic{font-size:1.1rem;line-height:1;color:var(--txt)}
+/* right rail (Home) + Home pill (other screens) */
+.rail{position:fixed;right:10px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:5px;z-index:50;max-height:calc(100vh - 16px);overflow-y:auto}
+.rail button{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;width:68px;min-height:44px;border-radius:12px;background:var(--card);border:1px solid var(--line);font-size:.56rem;font-weight:700;color:var(--mut)}
+.rail button:active{transform:scale(.96)}
+.rail .ic{font-size:1.05rem;line-height:1;color:var(--txt)}
+.badge{position:absolute;top:-5px;right:-5px;background:var(--bad);color:#fff;border-radius:999px;font-size:.6rem;min-width:17px;height:17px;line-height:17px;text-align:center;padding:0 4px}
 #homebtn{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));right:12px;z-index:50}
-/* home screen */
-.homehead{min-height:196px;padding-right:84px;display:flex;flex-direction:column;justify-content:center}
+/* home */
+.homehead{padding:16px 0 4px}
 .homehead h1{font-size:1.9rem;line-height:1.15;font-weight:900;letter-spacing:.02em;margin:0;word-break:break-word}
 .homehead .tag{color:var(--mut);margin:6px 0 0;font-size:1rem}
-.flow{margin-top:10px}
+.flow{margin-top:14px}
 .node{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px}
 .node.root{border-color:var(--acc)}
+.node.plan{border-color:var(--good)}
 .ntitle{font-weight:800;font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--mut)}
 .ntext{margin-top:6px;white-space:pre-wrap;word-break:break-word}
 .trunk{width:2px;height:20px;background:var(--line);margin-left:10px}
@@ -95,6 +100,22 @@ label.fld.full input{width:100%}
   .branch::after{display:none}
 }
 .rules{margin-top:28px;padding:14px;border:2px solid var(--bad);border-radius:var(--r);color:var(--bad);font-weight:900;text-transform:uppercase;text-align:center;letter-spacing:.04em;line-height:1.5}
+/* weekly / notification / correlations */
+.alert{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-top:1px solid var(--line)}
+.alert:first-child{border-top:none}
+.sev{width:10px;height:10px;border-radius:50%;margin-top:6px;flex:none}
+.dayrow{border-top:1px solid var(--line);padding:10px 0;cursor:pointer}
+.dayrow:first-child{border-top:none}
+.chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.ch{font-size:.7rem;padding:2px 7px;border-radius:999px;border:1px solid var(--line);color:var(--mut)}
+.ch.hit{border-color:var(--good);color:var(--good)}
+.ch.miss{border-color:var(--bad);color:var(--bad)}
+.ch.rest{border-style:dashed}
+.ch.s{border-color:var(--acc);color:var(--acc)}
+.notetxt{white-space:pre-wrap;margin-top:6px;font-size:.9rem;word-break:break-word}
+.grid7{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;font-size:.68rem;text-align:center}
+.gc{padding:5px 2px;border-radius:6px;background:var(--line);line-height:1.3}
+.gc.c{color:#fff}
 #toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--txt);color:var(--bg);border-radius:12px;padding:10px 14px;display:none;align-items:center;gap:14px;z-index:99;max-width:92vw;font-size:.9rem;font-weight:600}
 #toast button{color:var(--acc);font-weight:800}
 #modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:100;padding:20px}
@@ -108,6 +129,9 @@ label.fld.full input{width:100%}
   <section id="scr-today" hidden></section>
   <section id="scr-study" hidden></section>
   <section id="scr-metrics" hidden></section>
+  <section id="scr-weekly" hidden></section>
+  <section id="scr-notification" hidden></section>
+  <section id="scr-correlations" hidden></section>
   <section id="scr-settings" hidden></section>
 </main>
 <button id="homebtn" class="btn sm" data-nav="home" hidden>⌂ Home</button>
@@ -128,6 +152,8 @@ const uid=()=>Math.random().toString(36).slice(2,9);
 const deep=o=>JSON.parse(JSON.stringify(o));
 const PAL=["#4f6ef7","#22a06b","#e0653a","#b45de0","#d99a06","#2aa8c4","#e0568f","#7a8699","#5fae4e","#c46a5a"];
 const colorOf=i=>PAL[i%PAL.length];
+const SEVC=["var(--bad)","var(--warn)","var(--good)","var(--acc)"];
+const DOW=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],DOWL=["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
 
 /* ================= IST time — app runs on UTC+5:30 on every device ================= */
 /* toISOString is FORBIDDEN for day keys. Day keys come only from ymdFromDate(). */
@@ -139,11 +165,13 @@ function logicalToday(){const t=istNow();const sh=new Date(t.getTime()-(S.settin
 function addDays(s,n){const d=parseYMD(s);d.setDate(d.getDate()+n);return ymdFromDate(d);}
 function daysBetween(a,b){return Math.round((parseYMD(b)-parseYMD(a))/86400000);}
 function dowMon(s){return (parseYMD(s).getDay()+6)%7;}
+function monday(s){return addDays(s,-dowMon(s));}
 function yearOf(s){return s.slice(0,4);}
 function isoWeekKey(s){const d=parseYMD(s);d.setDate(d.getDate()+3-((d.getDay()+6)%7));const wy=d.getFullYear();const jan4=new Date(wy,0,4,12);
   const w=1+Math.round(((d-jan4)/86400000-3+((jan4.getDay()+6)%7))/7);return wy+"-W"+String(w).padStart(2,"0");}
 function fmtDay(s){return parseYMD(s).toLocaleDateString("en-IN",{weekday:"short",day:"numeric",month:"short"});}
 function fmtShort(s){return parseYMD(s).toLocaleDateString("en-IN",{day:"numeric",month:"short"});}
+function monthLabel(s){return parseYMD(s).toLocaleDateString("en-IN",{month:"long",year:"numeric"});}
 
 /* ================= defaults & storage ================= */
 const DEF={
@@ -152,7 +180,7 @@ const DEF={
  goals:[
   {id:"study",label:"Study",kind:"countup",target:2,unit:"sessions",active:true},
   {id:"steps",label:"Steps",kind:"countup",target:10000,unit:"steps",active:true},
-  {id:"strength",label:"Strength",kind:"tick",active:true},
+  {id:"strength",label:"Strength",kind:"tick",active:true,restable:true},
   {id:"food",label:"Food",kind:"composite",active:true,children:[
     {id:"kcal",label:"Calories",kind:"band",target:1800,tol:100,unit:"kcal",active:true},
     {id:"protein",label:"Protein",kind:"countup",target:120,unit:"g",active:true}]},
@@ -181,13 +209,14 @@ function saveKey(k){localStorage.setItem("hb:"+k,JSON.stringify(S[k]));}
 function loadAll(){KEYS.forEach(loadKey);
   for(const f in DEF.settings) if(S.settings[f]===undefined) S.settings[f]=DEF.settings[f];
   for(const f in DEF.home) if(S.home[f]===undefined) S.home[f]=DEF.home[f];
+  let mig=false;S.goals.forEach(g=>{if(g.id==="strength"&&g.restable===undefined){g.restable=true;mig=true;}});if(mig) saveKey("goals");
   if(!S.meta.firstUse){S.meta.firstUse=logicalToday();saveKey("meta");}}
 
 /* ================= registry / snapshots ================= */
 function activeChildren(g){return (g.children||[]).filter(c=>c.active!==false);}
 function isActiveGoal(g){if(g.active===false) return false;if(g.kind==="composite") return activeChildren(g).length>0;return true;}
 function snapshotRegistry(){return S.goals.filter(isActiveGoal).map(g=>{
-  const s={id:g.id,label:g.label,kind:g.kind};
+  const s={id:g.id,label:g.label,kind:g.kind,restable:!!g.restable};
   if(g.kind!=="tick"&&g.kind!=="composite"){s.target=g.target;s.unit=g.unit;if(g.kind==="band") s.tol=g.tol;}
   if(g.kind==="composite") s.children=activeChildren(g).map(c=>{const cs={id:c.id,label:c.label,kind:c.kind};
     if(c.kind!=="tick"){cs.target=c.target;cs.unit=c.unit;if(c.kind==="band") cs.tol=c.tol;}return cs;});
@@ -195,6 +224,14 @@ function snapshotRegistry(){return S.goals.filter(isActiveGoal).map(g=>{
 function getDay(dk){return S.days[dk]||null;}
 function ensureDay(dk){if(!S.days[dk]) S.days[dk]={snap:snapshotRegistry(),v:{}};return S.days[dk];} /* created on first EDIT only */
 function commitDay(){saveKey("days");}
+function isSkipped(rec,id){return !!(rec&&rec.v.skip&&rec.v.skip[id]);}
+function leafGoals(){const out=[];S.goals.forEach(g=>{if(!isActiveGoal(g)) return;
+  if(g.kind==="composite") activeChildren(g).forEach(c=>out.push({id:c.id,label:c.label,kind:c.kind,parent:g.id}));
+  else out.push({id:g.id,label:g.label,kind:g.kind,parent:null});});return out;}
+function leafSnap(rec,leaf){if(!rec) return null;if(leaf.parent){const p=rec.snap.find(x=>x.id===leaf.parent);return p&&p.children?(p.children.find(c=>c.id===leaf.id)||null):null;}
+  return rec.snap.find(x=>x.id===leaf.id)||null;}
+function leafStatus(rec,leaf){if(!rec) return null;const sn=leafSnap(rec,leaf);if(!sn) return null;
+  if(isSkipped(rec,leaf.parent||leaf.id)) return "rest";return fillOf(sn,rec.v)>=99.999?"hit":"miss";}
 
 /* ================= scoring ================= */
 function fillOf(g,v){
@@ -205,10 +242,35 @@ function fillOf(g,v){
     if(val==null) return 0;return clamp(val/t*100,0,100);}
   if(g.kind==="composite"){const ch=g.children||[];if(!ch.length) return 0;return mean(ch.map(c=>fillOf(c,v)));}
   return 0;}
-function dayPct(rec){if(!rec||!rec.snap||!rec.snap.length) return null;return mean(rec.snap.map(g=>fillOf(g,rec.v)));}
+function dayPct(rec){if(!rec||!rec.snap||!rec.snap.length) return null;const gs=rec.snap.filter(g=>!isSkipped(rec,g.id));
+  if(!gs.length) return null;return mean(gs.map(g=>fillOf(g,rec.v)));}
 function streakCount(){const min=S.settings.streakMin,today=logicalToday();let c=0,d=addDays(today,-1);
   while(true){const r=getDay(d);if(!r) break;const p=dayPct(r);if(p==null||p<min) break;c++;d=addDays(d,-1);}
   const tr=getDay(today);if(tr){const p=dayPct(tr);if(p!=null&&p>=min) c++;}return c;}
+
+/* ================= per-goal stats & alerts ================= */
+function goalStats(leaf,today){const y=addDays(today,-1);const first=S.meta.firstUse;const start=daysBetween(first,today)>365?addDays(today,-365):first;
+  const seq=[];for(let d=start;d<=today;d=addDays(d,1)) seq.push({dk:d,st:leafStatus(getDay(d),leaf)});
+  let best=0,run=0;seq.forEach(o=>{if(o.dk===today) return;if(o.st==="hit"){run++;best=Math.max(best,run);}else if(o.st!=="rest") run=0;});
+  let cur=0;for(let i=seq.length-2;i>=0;i--){const st=seq[i].st;if(st==="hit") cur++;else if(st==="rest") continue;else break;}
+  if(seq.length&&seq[seq.length-1].st==="hit") cur++;best=Math.max(best,cur);
+  const rate=n=>{let h=0,s=0;for(const o of seq){if(o.dk===today) continue;if(daysBetween(o.dk,y)>=n) continue;if(o.st==="hit"){h++;s++;}else if(o.st==="miss") s++;}return s?{h,s,r:h/s*100}:null;};
+  const samples=[];for(let i=seq.length-2;i>=0&&samples.length<14;i--){const st=seq[i].st;if(st==="hit"||st==="miss") samples.push({dk:seq[i].dk,st});}
+  let lastMiss=null;for(let i=seq.length-2;i>=0;i--) if(seq[i].st==="miss"){lastMiss=seq[i].dk;break;}
+  const dow=Array.from({length:7},()=>({h:0,n:0}));for(const o of seq){if(o.dk===today) continue;if(daysBetween(o.dk,y)>=90) continue;
+    if(o.st==="hit"){dow[dowMon(o.dk)].h++;dow[dowMon(o.dk)].n++;}else if(o.st==="miss") dow[dowMon(o.dk)].n++;}
+  return {cur,best,r14:rate(14),r30:rate(30),l7:samples.slice(0,7),p7:samples.slice(7,14),lastMiss,dow};}
+function nudgeDue(today){const st=S.settings,base=st.lastExport||S.meta.firstUse;if(!base||daysBetween(base,today)<=30) return false;
+  if(st.nudgeSnoozedUntil&&today<=st.nudgeSnoozedUntil) return false;return true;}
+function computeAlerts(today){const out=[];
+  leafGoals().forEach(g=>{const s=goalStats(g,today);const m7=s.l7.filter(o=>o.st==="miss").length;
+    if(s.l7.length===7&&m7>=3) out.push({sev:0,text:`${g.label}: missed ${m7} of the last 7 logged days`});
+    if(s.l7.length===7&&s.p7.length===7){const a=s.l7.filter(o=>o.st==="hit").length/7*100,b=s.p7.filter(o=>o.st==="hit").length/7*100;
+      if(b-a>=25) out.push({sev:1,text:`${g.label}: dropping — ${Math.round(a)}% vs ${Math.round(b)}% the week before`});}
+    s.dow.forEach((d,i)=>{if(d.n>=3&&d.h/d.n<=0.4) out.push({sev:1,text:`${g.label}: missed ${d.n-d.h} of the last ${d.n} ${DOWL[i]}s`});});
+    if(s.cur>=7) out.push({sev:2,text:`${g.label}: ${s.cur}-day streak${s.cur>=s.best?" — best ever":""}`});});
+  if(nudgeDue(today)) out.push({sev:3,text:"Backup: over 30 days since your last export"});
+  out.sort((a,b)=>a.sev-b.sev);return out;}
 
 /* ================= yearly study targets (reset every Jan 1) ================= */
 function ensureYearRow(y){if(S.year[y]) return;const prev=Object.keys(S.year).sort().pop();const base=prev?S.year[prev]:null;
@@ -232,12 +294,14 @@ function showModal(html){$("#modalbox").innerHTML=html;$("#modal").style.display
 function hideModal(){$("#modal").style.display="none";}
 
 /* ================= UI state ================= */
-const SCREENS=["home","today","study","metrics","settings"];
-let viewDate=null,lastToday=null,curScreen="home",winSel="30",openLift=null,chartMode="top",lastSessType="reading",chooser=null;
+const SCREENS=["home","today","study","metrics","weekly","notification","correlations","settings"];
+const NAVS=[["today","◔","Today"],["study","📚","Study"],["metrics","📈","Metrics"],["weekly","🗓","Weekly"],["notification","🔔","Notification"],["correlations","⇄","Correlations"],["settings","⚙︎","Settings"]];
+let viewDate=null,lastToday=null,curScreen="home",winSel="30",openLift=null,chartMode="top",lastSessType="reading",chooser=null,roMode=false;
+let weekStart=null,archiveLimit=30,cx="sleepH",cy="dayPct",cshift=false,txtTimer=null;
 function show(sc){curScreen=sc;chooser=null;SCREENS.forEach(s=>{$("#scr-"+s).hidden=(s!==sc);});
   document.body.classList.toggle("onhome",sc==="home");$("#homebtn").hidden=(sc==="home");rerender();window.scrollTo(0,0);}
 function rerender(){const t=logicalToday();if(viewDate==null||(viewDate===lastToday&&t!==lastToday)||viewDate>t) viewDate=t;lastToday=t;
-  ensureYearRow(yearOf(t));({home:renderHome,today:renderToday,study:renderStudy,metrics:renderMetrics,settings:renderSettings})[curScreen]();}
+  ensureYearRow(yearOf(t));({home:renderHome,today:renderToday,study:renderStudy,metrics:renderMetrics,weekly:renderWeekly,notification:renderNotification,correlations:renderCorrelations,settings:renderSettings})[curScreen]();}
 function commitAndRender(){setTimeout(()=>{const a=document.activeElement,k=a&&a.dataset?a.dataset.k:null;rerender();
   if(k){const el=$('[data-k="'+k+'"]');if(el) el.focus();}},0);}
 function applyTheme(){const t=S.settings.theme;if(t==="light"||t==="dark") document.documentElement.setAttribute("data-theme",t);
@@ -248,8 +312,8 @@ function pol(cx,cy,r,a){const t=(a-90)*Math.PI/180;return [cx+r*Math.cos(t),cy+r
 function arcPath(cx,cy,r,a0,a1){const [x0,y0]=pol(cx,cy,r,a0),[x1,y1]=pol(cx,cy,r,a1);
   return `M${x0.toFixed(2)} ${y0.toFixed(2)} A${r} ${r} 0 ${(a1-a0)>180?1:0} 1 ${x1.toFixed(2)} ${y1.toFixed(2)}`;}
 function donutSVG(goals,v,pct,streak){const n=goals.length,cx=120,cy=120,r=94,sw=22;let paths="";
-  if(n){const seg=360/n,gap=3;goals.forEach((g,i)=>{const a0=i*seg+gap/2,a1=(i+1)*seg-gap/2,f=fillOf(g,v),col=colorOf(i);
-    paths+=`<path d="${arcPath(cx,cy,r,a0,a1)}" stroke="${col}" stroke-opacity=".18" stroke-width="${sw}" fill="none" data-act="gotorow" data-id="${g.id}"/>`;
+  if(n){const seg=360/n,gap=3;goals.forEach((g,i)=>{const a0=i*seg+gap/2,a1=(i+1)*seg-gap/2,col=colorOf(i),sk=!!(v.skip&&v.skip[g.id]),f=sk?0:fillOf(g,v);
+    paths+=`<path d="${arcPath(cx,cy,r,a0,a1)}" stroke="${col}" stroke-opacity="${sk?".3":".18"}" ${sk?'stroke-dasharray="3 5"':""} stroke-width="${sw}" fill="none" data-act="gotorow" data-id="${g.id}"/>`;
     if(f>0){const ae=f>=99.99?a1:a0+(a1-a0)*f/100;paths+=`<path d="${arcPath(cx,cy,r,a0,ae)}" stroke="${col}" stroke-width="${sw}" fill="none" data-act="gotorow" data-id="${g.id}"/>`;}});}
   const label=pct==null?"—":Math.round(pct)+"%";
   return `<svg viewBox="0 0 240 240" width="230" height="230" style="cursor:pointer">${paths}
@@ -279,6 +343,17 @@ function barsSVG(labels,A,B,names){const W=320,H=150,L=24,B0=24,T=12,n=Math.max(
     if(v>0) s+=`<text x="${(x0+off+bw/2).toFixed(1)}" y="${(y-3).toFixed(1)}" text-anchor="middle" fill="var(--mut)">${v}</text>`;});
     s+=`<text x="${x0.toFixed(1)}" y="${H-8}" text-anchor="middle" fill="var(--mut)">${esc(lb)}</text>`;});
   return s+`</svg><div class="mut small"><span style="color:${PAL[0]}">■</span> ${names[0]} &nbsp; <span style="color:${PAL[2]}">■</span> ${names[1]}</div>`;}
+function scatterSVG(pts,fit,xl,yl){const W=320,H=210,L=44,R=14,T=12,B=32;
+  const xs=pts.map(p=>p.x),ys=pts.map(p=>p.y);let x0=Math.min(...xs),x1=Math.max(...xs),y0=Math.min(...ys),y1=Math.max(...ys);
+  if(x1-x0<1e-9){x0-=1;x1+=1;}if(y1-y0<1e-9){y0-=1;y1+=1;}const px=(x1-x0)*.06,py=(y1-y0)*.08;x0-=px;x1+=px;y0-=py;y1+=py;
+  const X=x=>L+(W-L-R)*(x-x0)/(x1-x0),Y=y=>T+(H-T-B)*(1-(y-y0)/(y1-y0));
+  let s=`<svg viewBox="0 0 ${W} ${H}" width="100%" style="max-height:260px;font-size:10px">`;
+  for(let i=0;i<=2;i++){const yv=y0+(y1-y0)*i/2,yy=Y(yv);s+=`<line x1="${L}" x2="${W-R}" y1="${yy.toFixed(1)}" y2="${yy.toFixed(1)}" stroke="var(--line)"/><text x="${L-4}" y="${(yy+3).toFixed(1)}" text-anchor="end" fill="var(--mut)">${fmt1(yv)}</text>`;}
+  if(fit){const fy=x=>fit.a+fit.b*x;s+=`<line x1="${X(x0).toFixed(1)}" y1="${Y(fy(x0)).toFixed(1)}" x2="${X(x1).toFixed(1)}" y2="${Y(fy(x1)).toFixed(1)}" stroke="var(--good)" stroke-width="2" stroke-dasharray="6 4"/>`;}
+  pts.forEach(p=>{s+=`<circle cx="${X(p.x).toFixed(1)}" cy="${Y(p.y).toFixed(1)}" r="3.5" fill="var(--acc)" fill-opacity=".75"><title>${p.dk}: ${fmt1(p.x)}, ${fmt1(p.y)}</title></circle>`;});
+  s+=`<text x="${L}" y="${H-18}" fill="var(--mut)">${fmt1(x0+px)}</text><text x="${W-R}" y="${H-18}" text-anchor="end" fill="var(--mut)">${fmt1(x1-px)}</text>`;
+  s+=`<text x="${(L+(W-L-R)/2).toFixed(1)}" y="${H-5}" text-anchor="middle" fill="var(--txt)" font-weight="700">${esc(xl)} →</text>`;
+  s+=`<text x="10" y="${(T+(H-T-B)/2).toFixed(1)}" text-anchor="middle" fill="var(--txt)" font-weight="700" transform="rotate(-90 10 ${(T+(H-T-B)/2).toFixed(1)})">${esc(yl)} →</text></svg>`;return s;}
 function heatmapHTML(today){const start=addDays(today,-dowMon(today)-84);let h=`<div class="hm">`;
   for(let w=0;w<13;w++){h+=`<div class="wk">`;for(let r=0;r<7;r++){const dk=addDays(start,w*7+r);
     if(dk>today){h+=`<div class="c" style="visibility:hidden"></div>`;continue;}
@@ -288,31 +363,42 @@ function heatmapHTML(today){const start=addDays(today,-dowMon(today)-84);let h=`
   return h+`</div><div class="mut small">Columns = weeks, Mon→Sun top to bottom. Grey = not logged (excluded from averages).</div>`;}
 
 /* ================= HOME ================= */
-function renderHome(){const H=S.home;
-  const nav=`<div class="cnav">${[["today","◔","Today"],["study","📚","Study"],["metrics","📈","Metrics"],["settings","⚙︎","Settings"]].map(([s,ic,lb])=>`<button data-nav="${s}"><span class="ic">${ic}</span>${lb}</button>`).join("")}</div>`;
-  const node=(title,text,root)=>`<div class="node ${root?"root":""}"><div class="ntitle">${title}</div>${(text||"").trim()?`<div class="ntext">${esc(text.trim())}</div>`:(root?"":`<div class="ntext mut">—</div>`)}</div>`;
+function renderHome(){const H=S.home,today=logicalToday();const nAl=computeAlerts(today).filter(a=>a.sev<=1).length;
+  const rail=`<div class="rail">${NAVS.map(([s,ic,lb])=>`<button data-nav="${s}"><span class="ic">${ic}</span>${lb}${s==="notification"&&nAl?`<span class="badge">${nAl}</span>`:""}</button>`).join("")}</div>`;
+  const node=(title,text,cls)=>`<div class="node ${cls||""}"><div class="ntitle">${title}</div>${(text||"").trim()?`<div class="ntext">${esc(text.trim())}</div>`:(cls==="root"?"":`<div class="ntext mut">—</div>`)}</div>`;
   const rules=(H.rules||"").split("\n").map(s=>s.trim()).filter(Boolean);
-  let h=nav+`<div class="homehead"><h1>${esc(H.heading)}</h1>${H.tagline?`<p class="tag">${esc(H.tagline)}</p>`:""}</div>`;
-  h+=`<div class="flow">${node("Long term goals",H.ltg,true)}<div class="trunk"></div><div class="branches">
-    <div class="branch">${node("Study goals",H.study)}</div><div class="branch">${node("Health goals",H.health)}</div><div class="branch">${node("Self goals",H.self)}</div></div></div>`;
+  let h=rail+`<div class="homehead"><h1>${esc(H.heading)}</h1>${H.tagline?`<p class="tag">${esc(H.tagline)}</p>`:""}</div>`;
+  h+=`<div class="flow">${node("Long term goals",H.ltg,"root")}<div class="trunk"></div><div class="branches"><div class="branch">${node("Study goals",H.study)}</div><div class="branch">${node("Health goals",H.health)}</div><div class="branch">${node("Self goals",H.self)}</div></div></div>`;
+  const yrec=getDay(addDays(today,-1)),plan=yrec?(yrec.v.planText||"").trim():"";
+  if(plan) h+=`<div style="margin-top:14px">${node("Plan for today",plan,"plan")}</div>`;
   if(rules.length) h+=`<div class="rules">${rules.map(r=>`<div>${esc(r)}</div>`).join("")}</div>`;
   $("#scr-home").innerHTML=h;}
 
 /* ================= TODAY ================= */
 function renderToday(){const today=logicalToday(),dk=viewDate,rec=getDay(dk),goals=rec?rec.snap:snapshotRegistry(),v=rec?rec.v:{};
   const pct=rec?dayPct(rec):(goals.length?0:null);const back=daysBetween(dk,today),canPrev=S.settings.unlockHistory||back<S.settings.backfillDays;
+  roMode=!(S.settings.unlockHistory||back<=S.settings.backfillDays);
   let h=`<div class="datebar"><button class="btn sm" data-act="prevday" ${canPrev?"":"disabled"}>‹</button><span class="pill">${dk===today?"Today":esc(fmtDay(dk))}</span><button class="btn sm" data-act="nextday" ${dk===today?"disabled":""}>›</button></div>`;
-  if(dk!==today) h+=`<div class="editbanner">Editing ${esc(fmtDay(dk))}</div>`;
+  if(roMode) h+=`<div class="editbanner">Read-only — older than your backfill window (unlock in Settings)</div>`;
+  else if(dk!==today) h+=`<div class="editbanner">Editing ${esc(fmtDay(dk))}</div>`;
+  if(dk===today){const al=computeAlerts(today).filter(a=>a.sev<=1);if(al.length) h+=`<div class="card rowflex" data-nav="notification" style="cursor:pointer;padding:10px 14px"><span class="sev" style="background:${SEVC[al[0].sev]};margin-top:0"></span><span style="flex:1" class="small">${esc(al[0].text)}</span><span class="mut small">${al.length>1?"+"+(al.length-1)+" more ":""}›</span></div>`;}
   h+=`<div class="card donutwrap">${donutSVG(goals,v,pct,streakCount())}</div>`;
   if(!goals.length) h+=`<div class="card mut">No active goals. Turn some on in Settings.</div>`;
   else h+=`<div class="card">${goals.map((g,i)=>goalRow(g,i,v,dk)).join("")}</div>`;
-  if(dk===today) h+=nudgeHTML(today);
-  $("#scr-today").innerHTML=h;}
-function goalRow(g,i,v,dk){const col=colorOf(i),f=fillOf(g,v);let body="";
-  if(g.id==="study") body=studyCtl(g,v,dk);
-  else if(g.kind==="composite") body=(g.children||[]).map(c=>`<div style="margin-top:10px">${ctl(c,v,dk,true)}</div>`).join("");
-  else body=ctl(g,v,dk,false);
-  return `<div class="grow" id="row-${esc(g.id)}"><div class="rowflex"><span class="dot" style="background:${col}"></span><span class="glabel">${esc(g.label)}</span><span class="gval">${Math.round(f)}%</span></div>${body}<div class="bar"><i style="width:${f}%;background:${col}"></i></div></div>`;}
+  if(!goals.some(g=>g.id==="review")) h+=`<div class="card"><b class="small">Day note</b>${textBox("note",v,dk)}</div>`;
+  if(!goals.some(g=>g.id==="plan")) h+=`<div class="card"><b class="small">Plan for tomorrow</b>${textBox("planText",v,dk)}</div>`;
+  if(dk===today&&nudgeDue(today)) h+=`<div class="card rowflex"><span class="mut" style="flex:1">It's been ${daysBetween(S.settings.lastExport||S.meta.firstUse,today)} days since your last backup export.</span><button class="btn sm acc" data-act="export">Export now</button><button class="btn sm" data-act="snooze">Later</button></div>`;
+  const sec=$("#scr-today");sec.classList.toggle("ro",roMode);sec.innerHTML=h;}
+function textBox(f,v,dk){const ph=f==="note"?"Review today — what happened, what you learned…":"Plan for tomorrow — it shows on Home in the morning…";
+  return `<textarea class="day" data-txt="${f}" data-dk="${dk}" data-k="t:${f}:${dk}" placeholder="${ph}" ${roMode?"readonly":""}>${esc(v[f]||"")}</textarea>`;}
+function goalRow(g,i,v,dk){const col=colorOf(i),sk=!!(v.skip&&v.skip[g.id]),f=sk?0:fillOf(g,v);let body="";
+  if(!sk){if(g.id==="study") body=studyCtl(g,v,dk);
+    else if(g.kind==="composite") body=(g.children||[]).map(c=>`<div style="margin-top:10px">${ctl(c,v,dk,true)}</div>`).join("");
+    else body=ctl(g,v,dk,false);}
+  else body=`<div class="mut small" style="margin-top:6px">Planned rest — excluded from today's score, neutral for streaks.</div>`;
+  if(g.id==="review") body+=textBox("note",v,dk);if(g.id==="plan") body+=textBox("planText",v,dk);
+  const rest=g.restable?`<button class="btn sm ${sk?"on":""}" data-act="rest" data-id="${g.id}" data-dk="${dk}">${sk?"Resting":"Rest day"}</button>`:"";
+  return `<div class="grow" id="row-${esc(g.id)}"><div class="rowflex"><span class="dot" style="background:${col}"></span><span class="glabel">${esc(g.label)}</span><span class="gval">${sk?"rest":Math.round(f)+"%"}</span>${rest}</div>${body}${sk?"":`<div class="bar"><i style="width:${f}%;background:${col}"></i></div>`}</div>`;}
 function ctl(g,v,dk,sub){const val=v[g.id],k=`f:${g.id}:${dk}`;const lab=sub?`<span class="small" style="font-weight:600;min-width:70px">${esc(g.label)}</span>`:"";
   if(g.kind==="tick") return `<div class="spread" style="margin-top:8px">${lab||"<span></span>"}<button class="btn ${val===true?"on":""}" data-act="tick" data-id="${g.id}" data-dk="${dk}">${val===true?"✓ Done":"Mark done"}</button></div>`;
   const n=num(val),warn=warnFor(g.id,n),t=g.target,unit=esc(g.unit||"");
@@ -333,13 +419,13 @@ function studyCtl(g,v,dk){const ss=v.sessions||[],t=Math.max(1,g.target);let h=`
 function sessAct(dk,i,t){const rec=ensureDay(dk);rec.v.sessions=rec.v.sessions||[];const ss=rec.v.sessions;
   if(t==="remove"){if(i<ss.length){const bk=deep(S.days);ss.splice(i,1);commitDay();toast("Session removed",()=>{S.days=bk;commitDay();});}}
   else{lastSessType=t;if(i<ss.length) ss[i].type=t;else ss.push({type:t});commitDay();}chooser=null;}
-function nudgeHTML(today){const st=S.settings,base=st.lastExport||S.meta.firstUse;if(!base||daysBetween(base,today)<=30) return "";
-  if(st.nudgeSnoozedUntil&&today<=st.nudgeSnoozedUntil) return "";
-  return `<div class="card rowflex"><span class="mut" style="flex:1">It's been ${daysBetween(base,today)} days since your last backup export.</span><button class="btn sm acc" data-act="export">Export now</button><button class="btn sm" data-act="snooze">Later</button></div>`;}
+function saveText(dk,f,val){const r=ensureDay(dk);if(val.trim()) r.v[f]=val;else delete r.v[f];
+  if(f==="note"&&val.trim()){r.v.review=true;if(r.v.skip) delete r.v.skip.review;}
+  if(f==="planText"&&val.trim()){r.v.plan=true;if(r.v.skip) delete r.v.skip.plan;}commitDay();}
 
 /* ================= STUDY ================= */
 function renderStudy(){const today=logicalToday(),y=yearOf(today);ensureYearRow(y);const rec=getDay(today),v=rec?rec.v:{};
-  const sg=(rec?rec.snap:snapshotRegistry()).find(g=>g.id==="study");
+  const sg=(rec?rec.snap:snapshotRegistry()).find(g=>g.id==="study");roMode=false;
   let h=`<h2>Today's sessions</h2><div class="card">${sg?studyCtl(sg,v,today):`<span class="mut">Study goal is off. Turn it on in Settings.</span>`}</div><h2>${y} targets</h2>`;
   ["reading","revision"].forEach(t=>{const row=S.year[y][t],done=yearDone(y,t),p=clamp(done/Math.max(1,row.target)*100,0,100);
     h+=`<div class="card"><div class="spread"><b>${t==="reading"?"Reading":"Revision"}</b><span class="gval">${done} / ${row.target} sessions</span></div><div class="bar"><i style="width:${p}%;background:${t==="reading"?PAL[0]:PAL[2]}"></i></div><div class="mut small" style="margin-top:6px">${esc(paceText(y,t))}</div><label class="fld" style="margin-top:8px">Head start (sessions done before this app)<input type="number" inputmode="numeric" min="0" step="1" data-hs="${t}" data-k="hs:${t}" value="${row.headStart||0}"></label></div>`;});
@@ -356,8 +442,9 @@ function volOf(e){const v=validSets(e).filter(s=>num(s.r)!=null);return v.length
 function e1rmOf(e){const v=validSets(e).filter(s=>num(s.r)!=null);return v.length?Math.max(...v.map(s=>num(s.w)*(1+num(s.r)/30))):null;}
 function findEntry(lid,eid){const l=S.lifts.find(x=>x.id===lid);return l?l.entries.find(e=>e.id===eid):null;}
 function winStart(today){return winSel==="all"?S.meta.firstUse:addDays(today,-(parseInt(winSel)-1));}
+function winSeg(){return `<div class="seg">${["30","90","all"].map(w=>`<button class="${winSel===w?"on":""}" data-act="win" data-w="${w}">${w==="all"?"All":w+"d"}</button>`).join("")}</div>`;}
 function renderMetrics(){const today=logicalToday(),ws=winStart(today),inW=dk=>dk>=ws&&dk<=today;
-  let h=`<div class="spread" style="margin:4px 2px 10px"><h2 style="margin:0">Metrics</h2><div class="seg">${["30","90","all"].map(w=>`<button class="${winSel===w?"on":""}" data-act="win" data-w="${w}">${w==="all"?"All":w+"d"}</button>`).join("")}</div></div>`;
+  let h=`<div class="spread" style="margin:4px 2px 10px"><h2 style="margin:0">Metrics</h2>${winSeg()}</div>`;
   const be=S.body.entries.slice().sort((a,b)=>a.date<b.date?-1:1),last=be[be.length-1],bpts=be.filter(e=>inW(e.date)).map(e=>({d:e.date,y:e.kg}));
   h+=`<h2>Body</h2><div class="card"><div class="rowflex"><label class="fld">Height (cm)<input type="number" inputmode="decimal" min="0" data-bf="heightCm" data-k="bf:h" value="${S.body.heightCm??""}"></label><label class="fld">Goal weight (kg)<input type="number" inputmode="decimal" min="0" step="0.1" data-bf="goalKg" data-k="bf:g" value="${S.body.goalKg??""}"></label><label class="fld">Current<span style="font-size:1.1rem;font-weight:800;color:var(--txt);min-height:44px;display:flex;align-items:center">${last?fmt1(last.kg)+" kg":"—"}</span></label></div>
     <div class="rowflex" style="margin-top:8px"><input type="date" id="wdate" value="${today}"><input type="number" inputmode="decimal" step="0.1" min="0" id="wkg" placeholder="kg"><button class="btn sm acc" data-act="addweight">Add weigh-in</button></div>
@@ -375,12 +462,83 @@ function renderMetrics(){const today=logicalToday(),ws=winStart(today),inW=dk=>d
     h+=`</div>`;});
   const logged=Object.keys(S.days).filter(inW).sort(),N=daysBetween(ws,today)+1,overall=mean(logged.map(dk=>dayPct(S.days[dk])).filter(p=>p!=null));
   h+=`<h2>Goals</h2><div class="card"><div class="rowflex">${ringSVG(overall,110)}<div><div class="mut">Average day score</div><div class="mut small">logged ${logged.length}/${Math.max(N,0)} days</div></div></div>`;
-  S.goals.forEach((g,i)=>{const fs=[];logged.forEach(dk=>{const r=S.days[dk],sg=r.snap.find(x=>x.id===g.id);if(sg) fs.push(fillOf(sg,r.v));});
+  S.goals.forEach((g,i)=>{const fs=[];logged.forEach(dk=>{const r=S.days[dk];if(isSkipped(r,g.id)) return;const sg=r.snap.find(x=>x.id===g.id);if(sg) fs.push(fillOf(sg,r.v));});
     if(!fs.length) return;const m=mean(fs);
     h+=`<div style="margin-top:10px"><div class="spread"><span class="small" style="font-weight:600">${esc(g.label)}</span><span class="gval">${Math.round(m)}%</span></div><div class="bar"><i style="width:${m}%;background:${colorOf(i)}"></i></div></div>`;});
   if(!logged.length) h+=`<div class="mut" style="margin-top:8px">No logged days in this window yet.</div>`;
   h+=`</div><h2>Last 13 weeks</h2><div class="card">${heatmapHTML(today)}</div>`;
   $("#scr-metrics").innerHTML=h;}
+
+/* ================= WEEKLY ================= */
+function weekStats(ws,today){const out={logged:0,pcts:[],perfect:0,r:0,rv:0,goals:{}};const lg=leafGoals();
+  for(let i=0;i<7;i++){const dk=addDays(ws,i);if(dk>today) continue;const rec=getDay(dk);if(!rec) continue;out.logged++;
+    const p=dayPct(rec);if(p!=null){out.pcts.push(p);if(p>=S.settings.streakMin) out.perfect++;}
+    for(const s of (rec.v.sessions||[])){if(s.type==="reading") out.r++;else if(s.type==="revision") out.rv++;}
+    lg.forEach(g=>{const st=leafStatus(rec,g);if(st==="hit"||st==="miss"){const o=out.goals[g.id]||(out.goals[g.id]={h:0,n:0,label:g.label});o.n++;if(st==="hit") o.h++;}});}
+  out.avg=mean(out.pcts);
+  const we=S.body.entries.filter(e=>e.date>=ws&&e.date<=addDays(ws,6)).sort((a,b)=>a.date<b.date?-1:1);
+  if(we.length>=2){const d=we[we.length-1].kg-we[0].kg;out.weight=`${fmt1(we[0].kg)} → ${fmt1(we[we.length-1].kg)} kg (${d>=0?"+":""}${fmt1(d)})`;}
+  else out.weight=we.length===1?`${fmt1(we[0].kg)} kg (1 weigh-in)`:"no weigh-ins";return out;}
+function renderWeekly(){const today=logicalToday(),curMon=monday(today),firstMon=monday(S.meta.firstUse);
+  if(!weekStart||weekStart>curMon) weekStart=curMon;if(weekStart<firstMon) weekStart=firstMon;
+  const end=addDays(weekStart,6),wk=weekStats(weekStart,today),pv=weekStats(addDays(weekStart,-7),today);
+  let h=`<div class="datebar"><button class="btn sm" data-act="week" data-n="-1" ${weekStart<=firstMon?"disabled":""}>‹</button><span class="pill">${esc(fmtShort(weekStart))} – ${esc(fmtShort(end))}</span><button class="btn sm" data-act="week" data-n="1" ${weekStart>=curMon?"disabled":""}>›</button></div>`;
+  const delta=(wk.avg!=null&&pv.avg!=null)?wk.avg-pv.avg:null;
+  h+=`<div class="card"><div class="rowflex">${ringSVG(wk.avg,100)}<div><div class="mut">Average day score · ${wk.logged}/7 logged</div>${delta!=null?`<div class="small" style="color:${delta>=0?"var(--good)":"var(--bad)"};font-weight:700">${delta>=0?"+":""}${Math.round(delta)} vs previous week</div>`:""}<div class="mut small">Perfect days: ${wk.perfect} · Sessions: ${wk.r} R / ${wk.rv} Rev</div><div class="mut small">Weight: ${esc(wk.weight)}</div></div></div>`;
+  const gk=Object.keys(wk.goals);if(gk.length){h+=`<div style="margin-top:10px">`;gk.forEach(id=>{const o=wk.goals[id],p=o.h/o.n*100;
+    h+=`<div class="spread" style="margin-top:6px"><span class="small">${esc(o.label)}</span><span class="gval">${o.h}/${o.n}</span></div><div class="bar" style="margin-top:3px"><i style="width:${p}%;background:${p>=99.9?"var(--good)":p>=50?"var(--warn)":"var(--bad)"}"></i></div>`;});h+=`</div>`;}
+  h+=`</div><div class="card">`;
+  for(let i=0;i<7;i++){const dk=addDays(weekStart,i),rec=getDay(dk),p=rec?dayPct(rec):null;
+    h+=`<div class="dayrow" data-act="openday" data-dk="${dk}"><div class="spread"><b>${esc(fmtDay(dk))}${dk===today?" · today":""}</b><span class="gval">${dk>today?"upcoming":!rec?"not logged":(p==null?"—":Math.round(p)+"%")}</span></div>`;
+    if(rec){h+=`<div class="chips">${rec.snap.map(g=>{const sk=isSkipped(rec,g.id);const c=sk?"rest":fillOf(g,rec.v)>=99.999?"hit":"miss";return `<span class="ch ${c}">${esc(g.label)} ${sk?"zz":c==="hit"?"✓":"✗"}</span>`;}).join("")}${(rec.v.sessions||[]).map(s=>`<span class="ch s">${s.type==="reading"?"R":"Rev"}</span>`).join("")}</div>`;
+      if((rec.v.note||"").trim()) h+=`<div class="notetxt">${esc(rec.v.note.trim())}</div>`;
+      if((rec.v.planText||"").trim()) h+=`<div class="notetxt mut">Plan → ${esc(rec.v.planText.trim())}</div>`;}
+    h+=`</div>`;}
+  h+=`</div><h2>All notes</h2><div class="card">`;
+  const notes=Object.keys(S.days).filter(dk=>(S.days[dk].v.note||"").trim()).sort().reverse();
+  if(!notes.length) h+=`<div class="mut">No notes yet. Write one under "Review today".</div>`;
+  let lastM="";notes.slice(0,archiveLimit).forEach(dk=>{const m=monthLabel(dk);if(m!==lastM){h+=`<div class="mut small" style="margin-top:10px;font-weight:700">${esc(m)}</div>`;lastM=m;}
+    h+=`<div class="dayrow" data-act="openday" data-dk="${dk}"><b class="small">${esc(fmtDay(dk))}</b><div class="notetxt">${esc(S.days[dk].v.note.trim())}</div></div>`;});
+  if(notes.length>archiveLimit) h+=`<div style="margin-top:10px"><button class="btn sm ghost" data-act="more">Show more (${notes.length-archiveLimit} left)</button></div>`;
+  h+=`</div>`;$("#scr-weekly").innerHTML=h;}
+
+/* ================= NOTIFICATION ================= */
+function renderNotification(){const today=logicalToday(),al=computeAlerts(today);const rt=r=>r?`${Math.round(r.r)}% (${r.h}/${r.s})`:"—";
+  let h=`<h2>Notification</h2><div class="card">${al.length?al.map(a=>`<div class="alert"><span class="sev" style="background:${SEVC[a.sev]}"></span><span>${esc(a.text)}</span></div>`).join(""):`<div class="mut">Nothing to flag yet. Streak alerts appear from day one; pattern alerts need 7 logged days; weekday patterns need 3 samples per weekday.</div>`}</div><h2>Per-goal patterns</h2>`;
+  leafGoals().forEach(g=>{const s=goalStats(g,today);
+    h+=`<div class="card"><div class="spread"><b>${esc(g.label)}</b><span class="gval">🔥 ${s.cur} · best ${s.best}</span></div><div class="rowflex mut small" style="margin-top:6px"><span>14d: ${rt(s.r14)}</span><span>30d: ${rt(s.r30)}</span><span>last miss: ${s.lastMiss?esc(fmtShort(s.lastMiss)):"—"}</span></div>
+      <div class="grid7" style="margin-top:8px">${s.dow.map((d,i)=>{const ok=d.n>=3,p=ok?Math.round(d.h/d.n*100):null;return `<div class="gc ${ok?"c":""}" style="${ok?`background:color-mix(in srgb,var(--good) ${p}%,var(--bad))`:""}" title="${DOWL[i]}: ${ok?d.h+"/"+d.n:"not enough data"}">${DOW[i]}<br>${ok?p+"%":"·"}</div>`;}).join("")}</div></div>`;});
+  $("#scr-notification").innerHTML=h;}
+
+/* ================= CORRELATIONS ================= */
+function seriesDefs(){const defs=[];leafGoals().forEach(g=>{if(g.id==="study") return;
+  if(g.kind==="tick") defs.push({id:g.id,label:g.label,bool:true,get:rec=>rec?(isSkipped(rec,g.parent||g.id)?null:(rec.v[g.id]===true?1:0)):null});
+  else defs.push({id:g.id,label:g.label,get:rec=>rec?num(rec.v[g.id]):null});});
+  defs.push({id:"sessions",label:"Study sessions",get:rec=>rec?(rec.v.sessions||[]).length:null});
+  defs.push({id:"dayPct",label:"Day %",get:rec=>rec?dayPct(rec):null});
+  const wm={};S.body.entries.forEach(e=>wm[e.date]=e.kg);defs.push({id:"weight",label:"Weight (kg)",get:(rec,dk)=>wm[dk]!=null?wm[dk]:null});return defs;}
+function pearson(p){const n=p.length;if(n<3) return null;const mx=mean(p.map(q=>q.x)),my=mean(p.map(q=>q.y));let sxy=0,sxx=0,syy=0;
+  p.forEach(q=>{sxy+=(q.x-mx)*(q.y-my);sxx+=(q.x-mx)**2;syy+=(q.y-my)**2;});if(!sxx||!syy) return null;return {r:sxy/Math.sqrt(sxx*syy),b:sxy/sxx,a:my-(sxy/sxx)*mx};}
+function renderCorrelations(){const today=logicalToday(),ws=winStart(today),defs=seriesDefs();
+  if(!defs.find(d=>d.id===cx)) cx=defs[0].id;if(!defs.find(d=>d.id===cy&&!d.bool)) cy="dayPct";
+  const dx=defs.find(d=>d.id===cx),dy=defs.find(d=>d.id===cy);const pts=[];
+  for(let dk=ws;dk<=today;dk=addDays(dk,1)){const xd=cshift?addDays(dk,-1):dk;const x=dx.get(getDay(xd),xd),y=dy.get(getDay(dk),dk);if(x!=null&&y!=null) pts.push({x,y,dk});}
+  const opt=(list,sel)=>list.map(d=>`<option value="${d.id}" ${d.id===sel?"selected":""}>${esc(d.label)}</option>`).join("");
+  const presets=[["sleepH","dayPct"],["steps","sleepH"],["sessions","sleepH"],["strength","dayPct"],["kcal","weight"]].filter(([a,b])=>defs.find(d=>d.id===a)&&defs.find(d=>d.id===b));
+  let h=`<div class="spread" style="margin:4px 2px 10px"><h2 style="margin:0">Correlations</h2>${winSeg()}</div><div class="card"><div class="rowflex"><label class="fld">X<select data-cx>${opt(defs,cx)}</select></label><label class="fld">Y<select data-cy>${opt(defs.filter(d=>!d.bool),cy)}</select></label><label class="rowflex small" style="gap:6px"><input type="checkbox" data-shift ${cshift?"checked":""} style="width:20px;height:20px">X from the day before</label></div>
+    <div class="rowflex" style="margin-top:8px">${presets.map(([a,b])=>`<button class="btn sm ghost" data-act="preset" data-x="${a}" data-y="${b}">${esc(defs.find(d=>d.id===a).label)} vs ${esc(defs.find(d=>d.id===b).label)}</button>`).join("")}</div></div>`;
+  h+=`<div class="card">`;
+  if(dx.bool){const A=pts.filter(p=>p.x===1).map(p=>p.y),B=pts.filter(p=>p.x===0).map(p=>p.y),ma=mean(A),mb=mean(B),mx=Math.max(1,ma||0,mb||0);
+    if(!A.length&&!B.length) h+=`<div class="mut">No overlapping data in this window.</div>`;
+    else{const row=(lb,m,n)=>`<div class="spread" style="margin-top:8px"><span class="small" style="font-weight:600">${lb}</span><span class="gval">${m==null?"—":fmt1(m)} · n=${n}</span></div><div class="bar" style="margin-top:3px"><i style="width:${m==null?0:m/mx*100}%;background:var(--acc)"></i></div>`;
+      h+=`<div class="mut small">Average <b>${esc(dy.label)}</b> when <b>${esc(dx.label)}</b> was done vs not</div>${row("Done",ma,A.length)}${row("Not done",mb,B.length)}`;
+      if(ma!=null&&mb!=null) h+=`<div class="small" style="margin-top:10px">Difference: <b>${ma-mb>=0?"+":""}${fmt1(ma-mb)}</b></div>`;}}
+  else{const fit=pearson(pts);
+    if(pts.length<2) h+=`<div class="mut">Not enough overlapping data in this window (need both values on the same day).</div>`;
+    else{h+=scatterSVG(pts,fit,dx.label,dy.label);const r=fit?fit.r:null;const word=r==null?"not computable":Math.abs(r)<.2?"no real relationship":Math.abs(r)<.5?"weak":Math.abs(r)<.8?"moderate":"strong";
+      h+=`<div class="small" style="margin-top:8px">n = <b>${pts.length}</b> · r = <b>${r==null?"—":(Math.round(r*100)/100)}</b> — ${word}${r!=null&&Math.abs(r)>=.2?(r>0?", positive":", negative"):""}</div>`;}}
+  if(pts.length&&pts.length<20) h+=`<div class="warnnote">Only ${pts.length} points — treat this as a hint, not a finding. Correlation is not causation either way.</div>`;
+  h+=`</div>`;$("#scr-correlations").innerHTML=h;}
 
 /* ================= SETTINGS ================= */
 function goalEditor(g,i,ci){const sub=ci!=null,k=`sf:${i}:${sub?ci:""}:`,d=`data-i="${i}" ${sub?`data-c="${ci}"`:""}`,custom=!sub&&!BUILTIN.has(g.id);
@@ -389,6 +547,7 @@ function goalEditor(g,i,ci){const sub=ci!=null,k=`sf:${i}:${sub?ci:""}:`,d=`data
   h+=`<input type="text" data-sf="label" ${d} data-k="${k}label" value="${esc(g.label)}" style="width:140px"><button class="btn sm ${g.active!==false?"on":""}" data-act="${sub?"cact":"gact"}" ${d}>${g.active!==false?"On":"Off"}</button><span class="mut small">${g.kind}</span>`;
   if(g.kind==="countup"||g.kind==="band") h+=`<input type="number" min="1" data-sf="target" ${d} data-k="${k}target" value="${g.target}" title="target" style="width:90px"><input type="text" data-sf="unit" ${d} data-k="${k}unit" value="${esc(g.unit||"")}" placeholder="unit" style="width:80px">`;
   if(g.kind==="band") h+=`<input type="number" min="1" data-sf="tol" ${d} data-k="${k}tol" value="${g.tol}" title="± tolerance" style="width:80px">`;
+  if(!sub) h+=`<button class="btn sm ${g.restable?"on":""}" data-act="grest" data-i="${i}" title="Allow rest days for this goal">rest days</button>`;
   if(custom) h+=`<button class="btn sm danger" data-act="delgoal" data-i="${i}">✕</button>`;
   return h+`</div>`;}
 function renderSettings(){const st=S.settings,y=yearOf(logicalToday()),H=S.home;ensureYearRow(y);
@@ -396,7 +555,7 @@ function renderSettings(){const st=S.settings,y=yearOf(logicalToday()),H=S.home;
   let h=`<h2>Home screen</h2><div class="card"><label class="fld full">Heading<input type="text" data-hf="heading" data-k="hf:heading" value="${esc(H.heading)}"></label><label class="fld full">Line under heading<input type="text" data-hf="tagline" data-k="hf:tagline" value="${esc(H.tagline)}"></label>${ta("ltg","Long term goals (optional text inside the top box)")}${ta("study","Study goals")}${ta("health","Health goals")}${ta("self","Self goals")}${ta("rules","Rules at the bottom — red caps, one per line")}</div>`;
   h+=`<h2>Goals</h2><div class="card">`;
   S.goals.forEach((g,i)=>{h+=goalEditor(g,i,null);if(g.kind==="composite") (g.children||[]).forEach((c,ci)=>{h+=goalEditor(c,i,ci);});});
-  h+=`</div><div class="card"><b>Add goal</b><div class="rowflex" style="margin-top:8px"><input type="text" id="ng-label" placeholder="Label"><select id="ng-kind"><option value="tick">Tick</option><option value="countup">Count up</option><option value="band">Band</option></select><input type="text" id="ng-unit" placeholder="unit" style="width:90px"><input type="number" id="ng-target" placeholder="target" min="1"><input type="number" id="ng-tol" placeholder="± tol" min="1"><button class="btn sm acc" data-act="addgoal">Add</button></div><div class="mut small" style="margin-top:6px">Changes and new goals apply from today onward. Past days keep their own snapshot and are never re-scored.</div></div>`;
+  h+=`</div><div class="card"><b>Add goal</b><div class="rowflex" style="margin-top:8px"><input type="text" id="ng-label" placeholder="Label"><select id="ng-kind"><option value="tick">Tick</option><option value="countup">Count up</option><option value="band">Band</option></select><input type="text" id="ng-unit" placeholder="unit" style="width:90px"><input type="number" id="ng-target" placeholder="target" min="1"><input type="number" id="ng-tol" placeholder="± tol" min="1"><button class="btn sm acc" data-act="addgoal">Add</button></div><div class="mut small" style="margin-top:6px">Changes and new goals apply from today onward. Past days keep their own snapshot and are never re-scored. "rest days" lets a goal be marked as planned rest on Today.</div></div>`;
   h+=`<h2>${y} study targets</h2><div class="card">`;
   ["reading","revision"].forEach(t=>{const r=S.year[y][t];h+=`<div class="item"><b style="width:80px">${t==="reading"?"Reading":"Revision"}</b><label class="fld">Target sessions<input type="number" min="1" step="1" data-yt="${t}" data-k="yt:${t}" value="${r.target}"></label><label class="fld">Head start<input type="number" min="0" step="1" data-hs="${t}" data-k="hs2:${t}" value="${r.headStart||0}"></label><span class="mut small">done ${yearDone(y,t)}</span></div>`;});
   h+=`<div class="mut small">Resets every Jan 1: the new year starts at 0 with these targets carried over.</div></div>`;
@@ -441,12 +600,17 @@ function act(el){const d=el.dataset,a=d.act,today=logicalToday();
   switch(a){
     case "prevday":viewDate=addDays(viewDate,-1);chooser=null;break;
     case "nextday":if(viewDate<today) viewDate=addDays(viewDate,1);chooser=null;break;
-    case "tick":{const r=ensureDay(d.dk);r.v[d.id]=r.v[d.id]!==true;commitDay();break;}
+    case "tick":{const r=ensureDay(d.dk);r.v[d.id]=r.v[d.id]!==true;if(r.v.skip) delete r.v.skip[d.id];commitDay();break;}
+    case "rest":{const r=ensureDay(d.dk);r.v.skip=r.v.skip||{};if(r.v.skip[d.id]) delete r.v.skip[d.id];else{r.v.skip[d.id]=true;delete r.v[d.id];}commitDay();break;}
     case "add":{const r=ensureDay(d.dk);r.v[d.id]=(num(r.v[d.id])||0)+num(d.n);commitDay();break;}
     case "slot":chooser={dk:d.dk,i:parseInt(d.i)};break;
     case "sess":sessAct(d.dk,parseInt(d.i),d.t);break;
     case "chcancel":chooser=null;break;
     case "gotorow":{const r=$("#row-"+CSS.escape(d.id));if(r) r.scrollIntoView({behavior:"smooth",block:"center"});return;}
+    case "openday":viewDate=d.dk;show("today");return;
+    case "week":weekStart=addDays(weekStart,parseInt(d.n)*7);break;
+    case "more":archiveLimit+=30;break;
+    case "preset":cx=d.x;cy=d.y;break;
     case "export":doExport();break;
     case "snooze":S.settings.nudgeSnoozedUntil=addDays(today,7);saveKey("settings");break;
     case "win":winSel=d.w;break;
@@ -466,6 +630,7 @@ function act(el){const d=el.dataset,a=d.act,today=logicalToday();
     case "mv":{const i=parseInt(d.i),j=i+parseInt(d.d);if(j<0||j>=S.goals.length) return;[S.goals[i],S.goals[j]]=[S.goals[j],S.goals[i]];saveKey("goals");break;}
     case "gact":{const g=S.goals[parseInt(d.i)];g.active=!(g.active!==false);saveKey("goals");break;}
     case "cact":{const c=S.goals[parseInt(d.i)].children[parseInt(d.c)];c.active=!(c.active!==false);saveKey("goals");break;}
+    case "grest":{const g=S.goals[parseInt(d.i)];g.restable=!g.restable;saveKey("goals");break;}
     case "delgoal":{const i=parseInt(d.i);if(BUILTIN.has(S.goals[i].id)) return;const bk=deep(S.goals),nm=S.goals[i].label;S.goals.splice(i,1);saveKey("goals");toast(`"${nm}" deleted (past days keep it)`,()=>{S.goals=bk;saveKey("goals");});break;}
     case "addgoal":addGoal();break;
     case "tog":S.settings[d.s]=!S.settings[d.s];saveKey("settings");break;
@@ -478,7 +643,9 @@ function act(el){const d=el.dataset,a=d.act,today=logicalToday();
 function onChange(t){const d=t.dataset,today=logicalToday();
   if(t.id==="importfile"){if(t.files&&t.files[0]) handleImportFile(t.files[0]);t.value="";return;}
   if(t.id==="wdate"||t.id==="wkg"||t.id==="newlift"||t.id.indexOf("ng-")===0) return;
-  if(d.hf){S.home[d.hf]=t.value;saveKey("home");}
+  if(d.txt!==undefined){clearTimeout(txtTimer);saveText(d.dk,d.txt,t.value);}
+  else if(d.hf){S.home[d.hf]=t.value;saveKey("home");}
+  else if("cx" in d){cx=t.value;}else if("cy" in d){cy=t.value;}else if("shift" in d){cshift=t.checked;}
   else if(d.field){const r=ensureDay(d.dk);const n=num(t.value);if(n==null||t.value==="") delete r.v[d.field];else r.v[d.field]=Math.max(0,n);commitDay();}
   else if(d.hs){const y=yearOf(today);ensureYearRow(y);S.year[y][d.hs].headStart=Math.max(0,Math.round(num(t.value)||0));saveKey("year");}
   else if(d.yt){const y=yearOf(today);const n=num(t.value);if(n==null||n<1) toast("Target must be at least 1");else S.year[y][d.yt].target=Math.round(n);saveKey("year");}
@@ -499,6 +666,8 @@ function bindEvents(){
   document.addEventListener("click",e=>{const nb=e.target.closest("[data-nav]");if(nb){show(nb.dataset.nav);return;}
     const el=e.target.closest("[data-act]");if(!el||el.disabled) return;act(el);});
   document.addEventListener("change",e=>onChange(e.target));
+  document.addEventListener("input",e=>{const t=e.target;if(!t.dataset||t.dataset.txt===undefined) return;clearTimeout(txtTimer);
+    const dk=t.dataset.dk,f=t.dataset.txt,val=t.value;txtTimer=setTimeout(()=>saveText(dk,f,val),400);});
   document.addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.matches("input")) e.target.blur();});
   document.addEventListener("visibilitychange",()=>{if(!document.hidden) rerender();});
   window.addEventListener("storage",e=>{if(e.key&&e.key.indexOf("hb:")===0){loadAll();rerender();}});}
