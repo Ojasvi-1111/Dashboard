@@ -5,13 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Dashboard</title>
 <style>
-:root{--bg:#f4f5f7;--card:#fff;--txt:#16181d;--mut:#6b7280;--line:#e3e5ea;--acc:#4f6ef7;--good:#22a06b;--warn:#d97706;--bad:#dc2626;--r:14px;--nav-h:60px}
+:root{--bg:#f4f5f7;--card:#fff;--txt:#16181d;--mut:#6b7280;--line:#e3e5ea;--acc:#4f6ef7;--good:#22a06b;--warn:#d97706;--bad:#dc2626;--r:14px}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1013;--card:#181b20;--txt:#e8eaee;--mut:#8a919e;--line:#262a31;--acc:#7b93ff;--good:#34c98b;--warn:#f0a12e;--bad:#f26565}}
 :root[data-theme="dark"]{--bg:#0e1013;--card:#181b20;--txt:#e8eaee;--mut:#8a919e;--line:#262a31;--acc:#7b93ff;--good:#34c98b;--warn:#f0a12e;--bad:#f26565}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;padding:0}
-body{background:var(--bg);color:var(--txt);font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding-bottom:calc(var(--nav-h) + env(safe-area-inset-bottom,0px) + 12px)}
-main{max-width:760px;margin:0 auto;padding:12px}
+body{background:var(--bg);color:var(--txt);font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding-bottom:calc(24px + env(safe-area-inset-bottom,0px))}
+main{max-width:760px;margin:0 auto;padding:calc(12px + env(safe-area-inset-top,0px)) 12px 12px}
+body:not(.onhome) main{padding-top:calc(64px + env(safe-area-inset-top,0px))}
 section[hidden]{display:none}
 h2{font-size:1.05rem;margin:18px 4px 8px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px;margin-bottom:12px}
@@ -26,12 +27,15 @@ button:disabled{opacity:.35;cursor:default}
 .btn.ghost{border-style:dashed;color:var(--mut)}
 .btn.on{background:var(--acc);border-color:var(--acc);color:#fff}
 .btn.danger{color:var(--bad)}
-input[type=number],input[type=text],input[type=date],select{font:inherit;color:var(--txt);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:9px 10px;min-height:44px;width:110px;max-width:100%}
+input[type=number],input[type=text],input[type=date],select,textarea{font:inherit;color:var(--txt);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:9px 10px;min-height:44px;width:110px;max-width:100%}
 input[type=text]{width:160px}
 input[type=date]{width:150px}
 select{width:auto;min-width:90px}
-input:focus,select:focus{outline:2px solid var(--acc);outline-offset:1px}
+textarea{width:100%;min-height:84px;resize:vertical;line-height:1.4}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--acc);outline-offset:1px}
 label.fld{display:inline-flex;flex-direction:column;gap:4px;font-size:.8rem;color:var(--mut);margin:4px 8px 4px 0}
+label.fld.full{display:flex;width:100%;margin-right:0}
+label.fld.full input{width:100%}
 .rowflex{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .spread{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .grow{border-top:1px solid var(--line);padding:12px 2px}
@@ -59,30 +63,54 @@ label.fld{display:inline-flex;flex-direction:column;gap:4px;font-size:.8rem;colo
 .hm .wk{display:flex;flex-direction:column;gap:3px}
 .hm .c{width:14px;height:14px;border-radius:3px;background:var(--line);flex:none}
 .hm .c.today{outline:2px solid var(--txt);outline-offset:-1px}
-nav{position:fixed;left:0;right:0;bottom:0;height:calc(var(--nav-h) + env(safe-area-inset-bottom,0px));padding-bottom:env(safe-area-inset-bottom,0px);background:var(--card);border-top:1px solid var(--line);display:flex;z-index:50}
-nav button{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:.7rem;font-weight:600;color:var(--mut)}
-nav button.on{color:var(--acc)}
-nav .ic{font-size:1.15rem;line-height:1}
-#toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--nav-h) + env(safe-area-inset-bottom,0px) + 14px);background:var(--txt);color:var(--bg);border-radius:12px;padding:10px 14px;display:none;align-items:center;gap:14px;z-index:99;max-width:92vw;font-size:.9rem;font-weight:600}
+/* corner nav (Home) + Home pill (other screens) */
+.cnav{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));right:12px;display:flex;flex-direction:column;gap:5px;z-index:50}
+.cnav button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;width:64px;min-height:46px;border-radius:12px;background:var(--card);border:1px solid var(--line);font-size:.62rem;font-weight:700;color:var(--mut)}
+.cnav button:active{transform:scale(.96)}
+.cnav .ic{font-size:1.1rem;line-height:1;color:var(--txt)}
+#homebtn{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));right:12px;z-index:50}
+/* home screen */
+.homehead{min-height:196px;padding-right:84px;display:flex;flex-direction:column;justify-content:center}
+.homehead h1{font-size:1.9rem;line-height:1.15;font-weight:900;letter-spacing:.02em;margin:0;word-break:break-word}
+.homehead .tag{color:var(--mut);margin:6px 0 0;font-size:1rem}
+.flow{margin-top:10px}
+.node{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px}
+.node.root{border-color:var(--acc)}
+.ntitle{font-weight:800;font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--mut)}
+.ntext{margin-top:6px;white-space:pre-wrap;word-break:break-word}
+.trunk{width:2px;height:20px;background:var(--line);margin-left:10px}
+.branches{display:flex;flex-direction:column;position:relative;padding-left:26px}
+.branch{position:relative;margin-bottom:12px}
+.branch:last-child{margin-bottom:0}
+.branch::before{content:"";position:absolute;left:-16px;top:0;bottom:-12px;width:2px;background:var(--line)}
+.branch:last-child::before{bottom:auto;height:28px}
+.branch::after{content:"";position:absolute;left:-16px;top:28px;width:16px;height:2px;background:var(--line)}
+@media(min-width:640px){
+  .trunk{margin:0 auto}
+  .branches{flex-direction:row;padding-left:0;gap:12px}
+  .branches::before{content:"";position:absolute;top:0;left:calc(16.6667% - 4px);right:calc(16.6667% - 4px);height:2px;background:var(--line)}
+  .branch{flex:1;margin-bottom:0;padding-top:20px}
+  .branch::before{left:50%;margin-left:-1px;top:0;bottom:auto;height:20px}
+  .branch:last-child::before{height:20px}
+  .branch::after{display:none}
+}
+.rules{margin-top:28px;padding:14px;border:2px solid var(--bad);border-radius:var(--r);color:var(--bad);font-weight:900;text-transform:uppercase;text-align:center;letter-spacing:.04em;line-height:1.5}
+#toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--txt);color:var(--bg);border-radius:12px;padding:10px 14px;display:none;align-items:center;gap:14px;z-index:99;max-width:92vw;font-size:.9rem;font-weight:600}
 #toast button{color:var(--acc);font-weight:800}
 #modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:100;padding:20px}
 #modal .box{background:var(--card);border-radius:var(--r);padding:18px;max-width:360px;width:100%}
-@media(min-width:768px){main{padding:20px}.hm .c{width:16px;height:16px}}
+@media(min-width:768px){main{padding-left:20px;padding-right:20px}.hm .c{width:16px;height:16px}}
 </style>
 </head>
 <body>
 <main>
-  <section id="scr-today"></section>
+  <section id="scr-home"></section>
+  <section id="scr-today" hidden></section>
   <section id="scr-study" hidden></section>
   <section id="scr-metrics" hidden></section>
   <section id="scr-settings" hidden></section>
 </main>
-<nav id="nav">
-  <button data-nav="today" class="on"><span class="ic">◔</span>Today</button>
-  <button data-nav="study"><span class="ic">📚</span>Study</button>
-  <button data-nav="metrics"><span class="ic">📈</span>Metrics</button>
-  <button data-nav="settings"><span class="ic">⚙︎</span>Settings</button>
-</nav>
+<button id="homebtn" class="btn sm" data-nav="home" hidden>⌂ Home</button>
 <div id="toast"><span id="toastmsg"></span><button id="toastundo" hidden>Undo</button></div>
 <div id="modal"><div class="box" id="modalbox"></div></div>
 <script>
@@ -137,9 +165,10 @@ const DEF={
  days:{},
  lifts:[{id:uid(),name:"Incline DB Chest Press",entries:[]},{id:uid(),name:"Lat Pulldown",entries:[]}],
  body:{heightCm:null,goalKg:null,entries:[]},
- year:{}
+ year:{},
+ home:{heading:"OJASVI - OPERATOR",tagline:"Keeping promises to myself",ltg:"",study:"",health:"",self:"",rules:"NO SOCIAL MEDIA BEFORE 1PM AND NO CAFFEINE AFTER 1PM"}
 };
-const KEYS=["meta","settings","goals","days","lifts","body","year"];
+const KEYS=["meta","settings","goals","days","lifts","body","year","home"];
 const BUILTIN=new Set(DEF.goals.map(g=>g.id));
 const QUICK={kcal:100,protein:25};
 const S={};
@@ -151,6 +180,7 @@ function loadKey(k){const raw=localStorage.getItem("hb:"+k);
 function saveKey(k){localStorage.setItem("hb:"+k,JSON.stringify(S[k]));}
 function loadAll(){KEYS.forEach(loadKey);
   for(const f in DEF.settings) if(S.settings[f]===undefined) S.settings[f]=DEF.settings[f];
+  for(const f in DEF.home) if(S.home[f]===undefined) S.home[f]=DEF.home[f];
   if(!S.meta.firstUse){S.meta.firstUse=logicalToday();saveKey("meta");}}
 
 /* ================= registry / snapshots ================= */
@@ -202,11 +232,12 @@ function showModal(html){$("#modalbox").innerHTML=html;$("#modal").style.display
 function hideModal(){$("#modal").style.display="none";}
 
 /* ================= UI state ================= */
-let viewDate=null,lastToday=null,curScreen="today",winSel="30",openLift=null,chartMode="top",lastSessType="reading",chooser=null;
-function show(sc){curScreen=sc;$$("#nav button").forEach(b=>b.classList.toggle("on",b.dataset.nav===sc));
-  ["today","study","metrics","settings"].forEach(s=>{$("#scr-"+s).hidden=(s!==sc);});rerender();window.scrollTo(0,0);}
+const SCREENS=["home","today","study","metrics","settings"];
+let viewDate=null,lastToday=null,curScreen="home",winSel="30",openLift=null,chartMode="top",lastSessType="reading",chooser=null;
+function show(sc){curScreen=sc;chooser=null;SCREENS.forEach(s=>{$("#scr-"+s).hidden=(s!==sc);});
+  document.body.classList.toggle("onhome",sc==="home");$("#homebtn").hidden=(sc==="home");rerender();window.scrollTo(0,0);}
 function rerender(){const t=logicalToday();if(viewDate==null||(viewDate===lastToday&&t!==lastToday)||viewDate>t) viewDate=t;lastToday=t;
-  ensureYearRow(yearOf(t));({today:renderToday,study:renderStudy,metrics:renderMetrics,settings:renderSettings})[curScreen]();}
+  ensureYearRow(yearOf(t));({home:renderHome,today:renderToday,study:renderStudy,metrics:renderMetrics,settings:renderSettings})[curScreen]();}
 function commitAndRender(){setTimeout(()=>{const a=document.activeElement,k=a&&a.dataset?a.dataset.k:null;rerender();
   if(k){const el=$('[data-k="'+k+'"]');if(el) el.focus();}},0);}
 function applyTheme(){const t=S.settings.theme;if(t==="light"||t==="dark") document.documentElement.setAttribute("data-theme",t);
@@ -255,6 +286,17 @@ function heatmapHTML(today){const start=addDays(today,-dowMon(today)-84);let h=`
     const st=p==null?"":`background:color-mix(in srgb,var(--acc) ${Math.round(15+85*p/100)}%,var(--line))`;
     h+=`<div class="c ${dk===today?"today":""}" style="${st}" title="${dk}: ${p==null?"not logged":Math.round(p)+"%"}"></div>`;}h+=`</div>`;}
   return h+`</div><div class="mut small">Columns = weeks, Mon→Sun top to bottom. Grey = not logged (excluded from averages).</div>`;}
+
+/* ================= HOME ================= */
+function renderHome(){const H=S.home;
+  const nav=`<div class="cnav">${[["today","◔","Today"],["study","📚","Study"],["metrics","📈","Metrics"],["settings","⚙︎","Settings"]].map(([s,ic,lb])=>`<button data-nav="${s}"><span class="ic">${ic}</span>${lb}</button>`).join("")}</div>`;
+  const node=(title,text,root)=>`<div class="node ${root?"root":""}"><div class="ntitle">${title}</div>${(text||"").trim()?`<div class="ntext">${esc(text.trim())}</div>`:(root?"":`<div class="ntext mut">—</div>`)}</div>`;
+  const rules=(H.rules||"").split("\n").map(s=>s.trim()).filter(Boolean);
+  let h=nav+`<div class="homehead"><h1>${esc(H.heading)}</h1>${H.tagline?`<p class="tag">${esc(H.tagline)}</p>`:""}</div>`;
+  h+=`<div class="flow">${node("Long term goals",H.ltg,true)}<div class="trunk"></div><div class="branches">
+    <div class="branch">${node("Study goals",H.study)}</div><div class="branch">${node("Health goals",H.health)}</div><div class="branch">${node("Self goals",H.self)}</div></div></div>`;
+  if(rules.length) h+=`<div class="rules">${rules.map(r=>`<div>${esc(r)}</div>`).join("")}</div>`;
+  $("#scr-home").innerHTML=h;}
 
 /* ================= TODAY ================= */
 function renderToday(){const today=logicalToday(),dk=viewDate,rec=getDay(dk),goals=rec?rec.snap:snapshotRegistry(),v=rec?rec.v:{};
@@ -349,8 +391,10 @@ function goalEditor(g,i,ci){const sub=ci!=null,k=`sf:${i}:${sub?ci:""}:`,d=`data
   if(g.kind==="band") h+=`<input type="number" min="1" data-sf="tol" ${d} data-k="${k}tol" value="${g.tol}" title="± tolerance" style="width:80px">`;
   if(custom) h+=`<button class="btn sm danger" data-act="delgoal" data-i="${i}">✕</button>`;
   return h+`</div>`;}
-function renderSettings(){const st=S.settings,y=yearOf(logicalToday());ensureYearRow(y);
-  let h=`<h2>Goals</h2><div class="card">`;
+function renderSettings(){const st=S.settings,y=yearOf(logicalToday()),H=S.home;ensureYearRow(y);
+  const ta=(f,lb)=>`<label class="fld full">${lb}<textarea data-hf="${f}" data-k="hf:${f}">${esc(H[f]||"")}</textarea></label>`;
+  let h=`<h2>Home screen</h2><div class="card"><label class="fld full">Heading<input type="text" data-hf="heading" data-k="hf:heading" value="${esc(H.heading)}"></label><label class="fld full">Line under heading<input type="text" data-hf="tagline" data-k="hf:tagline" value="${esc(H.tagline)}"></label>${ta("ltg","Long term goals (optional text inside the top box)")}${ta("study","Study goals")}${ta("health","Health goals")}${ta("self","Self goals")}${ta("rules","Rules at the bottom — red caps, one per line")}</div>`;
+  h+=`<h2>Goals</h2><div class="card">`;
   S.goals.forEach((g,i)=>{h+=goalEditor(g,i,null);if(g.kind==="composite") (g.children||[]).forEach((c,ci)=>{h+=goalEditor(c,i,ci);});});
   h+=`</div><div class="card"><b>Add goal</b><div class="rowflex" style="margin-top:8px"><input type="text" id="ng-label" placeholder="Label"><select id="ng-kind"><option value="tick">Tick</option><option value="countup">Count up</option><option value="band">Band</option></select><input type="text" id="ng-unit" placeholder="unit" style="width:90px"><input type="number" id="ng-target" placeholder="target" min="1"><input type="number" id="ng-tol" placeholder="± tol" min="1"><button class="btn sm acc" data-act="addgoal">Add</button></div><div class="mut small" style="margin-top:6px">Changes and new goals apply from today onward. Past days keep their own snapshot and are never re-scored.</div></div>`;
   h+=`<h2>${y} study targets</h2><div class="card">`;
@@ -377,7 +421,7 @@ function doExport(){const data={};KEYS.forEach(k=>data[k]=S[k]);
   setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},1000);S.settings.lastExport=logicalToday();saveKey("settings");toast("Backup exported");}
 function handleImportFile(file){const rd=new FileReader();rd.onload=()=>{try{const j=JSON.parse(rd.result);const d=j&&j.data?j.data:j;
     if(!d||!d.meta||d.meta.schemaVersion!==1) throw new Error("bad");pendingImport=d;
-    showModal(`<b>Import backup</b><p class="mut small">${Object.keys(d.days||{}).length} logged days, ${(d.lifts||[]).length} lifts, ${((d.body||{}).entries||[]).length} weigh-ins.</p><div class="rowflex"><button class="btn acc" data-act="imp-replace">Replace all</button><button class="btn" data-act="imp-merge">Merge</button><button class="btn" data-act="imp-cancel">Cancel</button></div><p class="mut small">Replace overwrites everything. Merge adds or overwrites by date and keeps your current settings and goal list.</p>`);}
+    showModal(`<b>Import backup</b><p class="mut small">${Object.keys(d.days||{}).length} logged days, ${(d.lifts||[]).length} lifts, ${((d.body||{}).entries||[]).length} weigh-ins.</p><div class="rowflex"><button class="btn acc" data-act="imp-replace">Replace all</button><button class="btn" data-act="imp-merge">Merge</button><button class="btn" data-act="imp-cancel">Cancel</button></div><p class="mut small">Replace overwrites everything. Merge adds or overwrites by date and keeps your current settings, goal list and home text.</p>`);}
   catch(e){toast("Import failed: not a valid dashboard backup (schemaVersion 1 required)");}};rd.readAsText(file);}
 function applyImport(mode){const d=pendingImport;if(!d) return;
   if(mode==="replace"){KEYS.forEach(k=>{if(d[k]!==undefined) S[k]=deep(d[k]);});}
@@ -389,6 +433,7 @@ function applyImport(mode){const d=pendingImport;if(!d) return;
     for(const yy in (d.year||{})){ensureYearRow(yy);["reading","revision"].forEach(t=>{if(d.year[yy][t]) S.year[yy][t]=deep(d.year[yy][t]);});}
     if(d.meta&&d.meta.firstUse&&d.meta.firstUse<S.meta.firstUse) S.meta.firstUse=d.meta.firstUse;}
   for(const f in DEF.settings) if(S.settings[f]===undefined) S.settings[f]=DEF.settings[f];
+  if(!S.home) S.home=deep(DEF.home);for(const f in DEF.home) if(S.home[f]===undefined) S.home[f]=DEF.home[f];
   KEYS.forEach(saveKey);pendingImport=null;hideModal();applyTheme();toast(mode==="replace"?"Backup restored":"Backup merged");rerender();}
 
 /* ================= events ================= */
@@ -433,7 +478,8 @@ function act(el){const d=el.dataset,a=d.act,today=logicalToday();
 function onChange(t){const d=t.dataset,today=logicalToday();
   if(t.id==="importfile"){if(t.files&&t.files[0]) handleImportFile(t.files[0]);t.value="";return;}
   if(t.id==="wdate"||t.id==="wkg"||t.id==="newlift"||t.id.indexOf("ng-")===0) return;
-  if(d.field){const r=ensureDay(d.dk);const n=num(t.value);if(n==null||t.value==="") delete r.v[d.field];else r.v[d.field]=Math.max(0,n);commitDay();}
+  if(d.hf){S.home[d.hf]=t.value;saveKey("home");}
+  else if(d.field){const r=ensureDay(d.dk);const n=num(t.value);if(n==null||t.value==="") delete r.v[d.field];else r.v[d.field]=Math.max(0,n);commitDay();}
   else if(d.hs){const y=yearOf(today);ensureYearRow(y);S.year[y][d.hs].headStart=Math.max(0,Math.round(num(t.value)||0));saveKey("year");}
   else if(d.yt){const y=yearOf(today);const n=num(t.value);if(n==null||n<1) toast("Target must be at least 1");else S.year[y][d.yt].target=Math.round(n);saveKey("year");}
   else if(d.bf){const n=num(t.value);S.body[d.bf]=(n==null||t.value==="")?null:Math.max(0,n);saveKey("body");}
@@ -448,17 +494,17 @@ function onChange(t){const d=t.dataset,today=logicalToday();
   else return;
   commitAndRender();}
 function bindEvents(){
-  $("#nav").addEventListener("click",e=>{const b=e.target.closest("[data-nav]");if(b) show(b.dataset.nav);});
   $("#toastundo").addEventListener("click",()=>{if(toastUndoFn) toastUndoFn();$("#toast").style.display="none";toastUndoFn=null;clearTimeout(toastTimer);rerender();});
   $("#modal").addEventListener("click",e=>{if(e.target.id==="modal"){pendingImport=null;hideModal();}});
-  document.addEventListener("click",e=>{const el=e.target.closest("[data-act]");if(!el||el.disabled) return;act(el);});
+  document.addEventListener("click",e=>{const nb=e.target.closest("[data-nav]");if(nb){show(nb.dataset.nav);return;}
+    const el=e.target.closest("[data-act]");if(!el||el.disabled) return;act(el);});
   document.addEventListener("change",e=>onChange(e.target));
   document.addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.matches("input")) e.target.blur();});
   document.addEventListener("visibilitychange",()=>{if(!document.hidden) rerender();});
   window.addEventListener("storage",e=>{if(e.key&&e.key.indexOf("hb:")===0){loadAll();rerender();}});}
 
 /* ================= boot ================= */
-function boot(){loadAll();viewDate=logicalToday();lastToday=viewDate;ensureYearRow(yearOf(viewDate));applyTheme();bindEvents();show("today");
+function boot(){loadAll();viewDate=logicalToday();lastToday=viewDate;ensureYearRow(yearOf(viewDate));applyTheme();bindEvents();show("home");
   if(corruptNote) toast("A stored item was corrupt — it was backed up and reset.");
   if(!S.meta.persistAsked&&navigator.storage&&navigator.storage.persist){S.meta.persistAsked=true;saveKey("meta");try{navigator.storage.persist().catch(()=>{});}catch(e){}}}
 document.addEventListener("DOMContentLoaded",boot);
