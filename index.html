@@ -678,5 +678,32 @@ function boot(){loadAll();viewDate=logicalToday();lastToday=viewDate;ensureYearR
   if(!S.meta.persistAsked&&navigator.storage&&navigator.storage.persist){S.meta.persistAsked=true;saveKey("meta");try{navigator.storage.persist().catch(()=>{});}catch(e){}}}
 document.addEventListener("DOMContentLoaded",boot);
 </script>
+<!-- ===== PATCH v2.1 — fixes 1–6 ===== -->
+<style>
+.ro .grow textarea{pointer-events:auto;opacity:.8}
+.rail button{white-space:nowrap;width:72px}
+body.onhome main{padding-right:96px}
+</style>
+<script>
+"use strict";
+/* 1. Correlations: tick goals report "no data" (not "not done") on days they didn't exist */
+function seriesDefs(){const defs=[];leafGoals().forEach(g=>{if(g.id==="study") return;
+  if(g.kind==="tick") defs.push({id:g.id,label:g.label,bool:true,get:rec=>(rec&&leafSnap(rec,g))?(isSkipped(rec,g.parent||g.id)?null:(rec.v[g.id]===true?1:0)):null});
+  else defs.push({id:g.id,label:g.label,get:rec=>rec?num(rec.v[g.id]):null});});
+  defs.push({id:"sessions",label:"Study sessions",get:rec=>rec?(rec.v.sessions||[]).length:null});
+  defs.push({id:"dayPct",label:"Day %",get:rec=>rec?dayPct(rec):null});
+  const wm={};S.body.entries.forEach(e=>wm[e.date]=e.kg);defs.push({id:"weight",label:"Weight (kg)",get:(rec,dk)=>wm[dk]!=null?wm[dk]:null});return defs;}
+/* 3. Notes: typing then deleting never creates an empty 0% day */
+function saveText(dk,f,val){if(!val.trim()&&!S.days[dk]) return;const r=ensureDay(dk);if(val.trim()) r.v[f]=val;else delete r.v[f];
+  if(f==="note"&&val.trim()){r.v.review=true;if(r.v.skip) delete r.v.skip.review;}
+  if(f==="planText"&&val.trim()){r.v.plan=true;if(r.v.skip) delete r.v.skip.plan;}commitDay();}
+/* 4. Import "Replace all": re-apply the Strength rest-day migration immediately */
+const _origApplyImport=applyImport;
+applyImport=function(mode){_origApplyImport(mode);let mig=false;
+  S.goals.forEach(g=>{if(g.id==="strength"&&g.restable===undefined){g.restable=true;mig=true;}});
+  if(mig){saveKey("goals");rerender();}};
+/* 6. Settings home-text boxes autosave as you type */
+document.addEventListener("input",e=>{const t=e.target;if(t&&t.dataset&&t.dataset.hf){S.home[t.dataset.hf]=t.value;saveKey("home");}});
+</script>
 </body>
 </html>
